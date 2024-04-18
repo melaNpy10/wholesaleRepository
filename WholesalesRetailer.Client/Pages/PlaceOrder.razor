@@ -1,0 +1,126 @@
+﻿@using WholesalesRetailer.Shared.Models
+@page "/placeOrder"
+@inject HttpClient Http
+@inject WholesalesRetailer.Client.Services.Interfaces.IOrderServiceFE  OrderServices
+@inject WholesalesRetailer.Client.Services.Interfaces.IProductServiceFE ProductServices
+
+
+<PageTitle>PlaceOrders</PageTitle>
+
+<h1>Place Order</h1>
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <td>ProductName</td>
+                <td>Code</td>
+                <td>CategoryId</td>
+                <td>Description</td>
+                <td>Quantity</td>
+                <td>List_Price</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prod in products)
+            {
+                <tr>
+                    <td>@prod.ProductName</td>
+                    <td>@prod.Code</td>
+                    <td>@prod.CategoryId</td>
+                    <td>@prod.Description</td>
+                    <td>@prod.Quantity buc</td>
+                    <td>@prod.List_Price RON</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<EditForm Model="@new_order" OnValidSubmit="CreateOrder">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="customerId">CustomerId</label>
+        <InputNumber id="customerId" @bind-Value="new_order.CustomerId" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="ProductCode">ProductCode</label>
+        <InputText id="code" @bind-Value="new_order.Code" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <InputNumber id="quantity" @bind-Value="new_order.Quantity" class="form-control" />
+    </div>
+    <br />
+    <br />
+    <div>
+        <button class="btn btn-secondary" type="submit">Add Order</button>
+    </div>
+    <ValidationSummary />
+</EditForm>
+
+@if (result)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>OrderId</th>
+                <th>CustomerId</th>
+                <th>CustomerName</th>
+                <th>Status</th>
+                <th>OrderDate</th>
+                <th>OrderVlaue</th>
+                <th>Rabate</th>
+                <th>FutureCashback</th>
+                <th>CashBack</th>
+                <th>FinalOrderValue</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@order.OrderId.</td>
+                <td>@order.CustomerId</td>
+                <td>@order.CustomerName</td>
+                <td>@order.OrderStatus</td>
+                <td>@order.OrderDate</td>
+                <td>@order.ProdValue</td>
+                <td>@order.ProcentRabate %</td>
+                <td>@order.FutureCashBack</td>
+                <td>@order.CashBack</td>
+                <td>@order.OrderValue RON</td>
+            </tr>
+
+        </tbody>
+    </table>
+} 
+
+@code {
+    private List<Product?> products;
+    private OrderRequest? new_order = new();
+    private OrderFE order;
+    private bool result = false;
+   
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductServices.GetProducts();
+    }
+
+    private async Task CreateOrder()
+    {
+        result = false;
+        try
+        {
+            order = await OrderServices.CreateOrder(new_order);
+            result = order != null ? true : false;
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
+}

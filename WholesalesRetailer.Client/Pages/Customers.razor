@@ -1,0 +1,48 @@
+﻿@using WholesalesRetailer.Shared.Models
+@page "/customers"
+@inject HttpClient Http
+@inject WholesalesRetailer.Client.Services.Interfaces.ICustomerServiceFE CustomerServices
+
+<PageTitle>Customers</PageTitle>
+
+<h1>Customers</h1>
+
+<p>Customers Managemet</p>
+
+@if (customers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <td>CustomerId</td>
+                <td>CustomerName</td>
+                <td>Email</td>
+                <td>Adress</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cus in customers)
+            {
+                <tr>
+                    <td>@cus.CustomerId</td>
+                    <td>@cus.CustomerName</td>
+                    <td>@cus.Adress</td>
+                    <td>@cus.Email</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Customer?> customers;
+   
+    protected override async Task OnInitializedAsync()
+    {
+        customers = await CustomerServices.GetCustomers();
+    }
+}

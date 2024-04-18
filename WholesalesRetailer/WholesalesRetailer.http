@@ -1,0 +1,10 @@
+@WholesalesRetailer_HostAddress = https://localhost:7157
+
+GET {{WholesalesRetailer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{WholesalesRetailer_HostAddress}}/weatherforecast
+
+###

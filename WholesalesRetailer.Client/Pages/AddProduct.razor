@@ -1,0 +1,104 @@
+﻿@using WholesalesRetailer.Shared.Models
+@page "/addProduct"
+@inject HttpClient Http
+@inject WholesalesRetailer.Client.Services.Interfaces.IProductServiceFE ProductServices
+
+<h3>Add Product</h3>
+
+<EditForm Model="@new_product" OnValidSubmit="CreateNewProduct">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="name">Name</label>
+        <InputText id="name" @bind-Value="new_product.ProductName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="code">Code</label>
+        <InputText id="code" @bind-Value="new_product.Code" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <InputText id="description" @bind-Value="new_product.Description" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="standardCost">Standard Cost</label>
+        <InputNumber id="standardCost" @bind-Value="new_product.Standard_Cost" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="listPrice">List Price</label>
+        <InputNumber id="title" @bind-Value="new_product.List_Price" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <InputNumber id="adress" @bind-Value="new_product.Quantity" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="category">Category</label>
+        <InputNumber id="title" @bind-Value="new_product.CategoryId" class="form-control" />
+    </div>
+    <br />
+    <br />
+    <div>
+        <button class="btn btn-secondary" type="submit">Add Product</button>
+    </div>
+    <ValidationSummary />
+
+</EditForm>
+
+
+@if (saved)
+{
+    <p>Product saved!</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <td>ProductId</td>
+                <td>ProductName</td>
+                <td>Code</td>
+                <td>CategoryId</td>
+                <td>Description</td>
+                <td>Quantity</td>
+                <td>List_Price</td>
+            </tr>
+        </thead>
+        <tbody>
+             <tr>
+                <td>@result.ProductId</td>
+                <td>@result.ProductName</td>
+                <td>@result.Code</td>
+                <td>@result.CategoryId</td>
+                <td>@result.Description</td>
+                <td>@result.Quantity</td>
+                <td>@result.List_Price</td>
+             </tr>
+        </tbody>
+    </table>
+}
+
+@if (error)
+{
+    <p> Something went wrong.</p>
+}
+@code {
+    private ProductFE new_product = new();
+    private Product result = new();
+    private bool rebate_check;
+    private bool saved = false;
+    private bool error = false;
+
+    async Task CreateNewProduct()
+    {
+        saved = false;
+        error = false;
+        try
+        {
+            result = await ProductServices.AddProduct(new_product);
+            saved = result != null ? true : false;
+        }
+        catch (Exception ex)
+        {
+            error = true;
+            throw;
+        }
+        new_product = new();
+    }       
+}

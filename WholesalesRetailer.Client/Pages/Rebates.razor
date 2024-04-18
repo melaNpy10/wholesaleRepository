@@ -1,0 +1,57 @@
+﻿@using WholesalesRetailer.Shared.Models
+@page "/rebates"
+@inject HttpClient Http
+@inject WholesalesRetailer.Client.Services.Interfaces.ICustomerServiceFE CustomerServices
+
+<PageTitle>Rebates</PageTitle>
+
+<h3>Rebates</h3>
+
+
+@if (customers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <td>CustomerId</td>
+                <td>CustomerName</td>
+                <td>Email</td>
+                <td>Address</td>
+                <td>RebateID</td>
+                <td>RebateProcent</td>
+                <td>Value</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cus in customers)
+            {
+                <tr>
+                    <td>@cus.CustomerId</td>
+                    <td>@cus.CustomerName</td>
+                    <td>@cus.Email</td>
+                    <td>@cus.Adress</td>
+                    <td>@cus.RebateId</td>
+                    <td>@cus.Procent %</td>
+                    <td>@cus.Value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<CustomerRebates?>? customers;
+    private List<OrderFE> order;
+    public int request;
+    private bool result = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        customers = await CustomerServices.GetCustomersRebates();
+    }
+}

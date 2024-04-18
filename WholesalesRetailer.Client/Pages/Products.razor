@@ -1,0 +1,52 @@
+﻿@using WholesalesRetailer.Shared.Models
+@page "/products"
+@inject HttpClient Http
+@inject WholesalesRetailer.Client.Services.Interfaces.IProductServiceFE ProductServices
+
+<PageTitle>products</PageTitle>
+
+<h1>Products</h1>
+
+<p>Products Managemet</p>
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <td>ProductName</td>
+                <td>Code</td>
+                <td>CategoryId</td>
+                <td>Description</td>
+                <td>Quantity</td>
+                <td>List_Price</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prod in products)
+            {
+                <tr>
+                    <td>@prod.ProductName</td>
+                    <td>@prod.Code</td>
+                    <td>@prod.CategoryId</td>
+                    <td>@prod.Description</td>
+                    <td>@prod.Quantity buc</td>
+                    <td>@prod.List_Price RON</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Product?> products;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductServices.GetProducts();
+    }
+}

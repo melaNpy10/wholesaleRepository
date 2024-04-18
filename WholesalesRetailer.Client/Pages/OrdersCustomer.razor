@@ -1,0 +1,106 @@
+﻿@using WholesalesRetailer.Shared.Models
+@page "/ordersCustomer"
+@inject HttpClient Http
+@inject WholesalesRetailer.Client.Services.Interfaces.IOrderServiceFE  OrderServices
+@inject WholesalesRetailer.Client.Services.Interfaces.ICustomerServiceFE CustomerServices
+
+
+<PageTitle>Orders</PageTitle>
+
+<h1>Orders by Customers</h1>
+
+
+@if (customers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <td>CustomerId</td>
+                <td>CustomerName</td>                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cus in customers)
+            {
+                <tr>
+                    <td>@cus.CustomerId</td>
+                    <td>@cus.CustomerName</td>                   
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<EditForm Model="@request" OnValidSubmit="GetOrdersByCustomerId">
+    <DataAnnotationsValidator/>
+    <div class="form-group">
+        <label for="name">CustomerId</label>
+        <InputNumber id="request" @bind-Value="request" class="form-control" />
+    </div>
+    <br/>
+    <br/>
+    <div>
+        <button class="btn btn-secondary" type="submit">Send</button>
+    </div>
+    <ValidationSummary/>   
+</EditForm>
+
+@if (result)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>OrderId</th>
+                <th>CustomerId</th>
+                <th>CustomerName</th>
+                <th>Status</th>
+                <th>OrderDate</th>
+                <th>OrderValue</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ord in order)
+            {
+                <tr>
+                    <td>@ord.OrderId.</td>
+                    <td>@ord.CustomerId</td>
+                    <td>@ord.CustomerName</td>
+                    <td>@ord.OrderStatus</td>
+                    <td>@ord.OrderDate</td>
+                    <td>@ord.OrderValue</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Customer?> customers;
+    private List<OrderFE> order;
+    public int request;
+    private bool result = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        customers = await CustomerServices.GetCustomers();
+    }
+
+    private async Task GetOrdersByCustomerId()
+    {
+        result = false;
+        try
+        {
+            order = await OrderServices.GetOrdersByCustomerId(request);
+            result = order != null ? true : false;
+        }
+        catch (Exception ex)
+        {            
+            throw;
+        }
+    }
+}

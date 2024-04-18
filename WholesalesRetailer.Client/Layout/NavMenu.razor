@@ -1,0 +1,132 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Wholesales Retailer</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        @* <div class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="weather">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+            </NavLink>
+        </div> *@
+        <div class="nav-item px-3" >
+            <NavLink class="nav-link" @onclick="()=>expendSubMenu1 =! expendSubMenu1">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span>Orders
+            </NavLink>
+                @if (expendSubMenu1)
+                {
+                    <ul class="nav flex-column">
+                        <li class="nav-item px-3">
+                            <NavLink class="expand-down" href="orders">
+                                <span class="oi oi-folder" aria-hidden="true"></span> Orders
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                        <NavLink class="expand-down" href="ordersCustomer">
+                                  <span class="oi oi-folder" aria-hidden="true"></span> CustomerOrders
+                              </NavLink>
+                        </li>
+                    </ul>
+                }            
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" @onclick="()=>expendSubMenu2 =! expendSubMenu2">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span>Customers
+            </NavLink>
+            @if (expendSubMenu2)
+            {
+                <ul class="nav flex-column">
+                    <li class="nav-item px-3">
+                        <NavLink class="expand-down" href="customers">
+                            <span class="oi oi-folder" aria-hidden="true"></span> Customers
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="expand-down" href="addCustomers">
+                            <span class="oi oi-folder" aria-hidden="true"></span> Add Customer
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="expand-down" href="rebates">
+                            <span class="oi oi-folder" aria-hidden="true"></span> Rebates
+                        </NavLink>
+                    </li>
+                </ul>
+            }
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" @onclick="()=>expendSubMenu =! expendSubMenu">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span>Products
+            </NavLink>
+            @if (expendSubMenu)
+            {
+                <ul class="nav flex-column">
+                    <li class="nav-item px-3">
+                        <NavLink class="expand-down" href="products">
+                            <span class="oi oi-folder" aria-hidden="true"></span> Products
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="expand-down" href="/addProduct">
+                            <span class="oi oi-folder" aria-hidden="true"></span> Add Product
+                        </NavLink>
+                    </li>
+                </ul>
+            }
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="placeOrder">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Place Order
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+    private bool expendSubMenu;
+    private bool expendSubMenu1;
+    private bool expendSubMenu2;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private bool showSubMenu = false;
+
+    private void ToggleSubMenu()
+    {
+        showSubMenu = !showSubMenu;
+    }
+    //bool to send to MainLayout for shrinking sidebar and showing/hide menu text
+    private bool IconMenuActive { get; set; } = false;
+
+    //EventCallback for sending bool to MainLayout
+    [Parameter]
+    public EventCallback<bool> ShowIconMenu { get; set; }
+
+    //Method to toggle IconMenuActive bool and send bool via EventCallback
+    private async Task ToggleIconMenu()
+    {
+        IconMenuActive = !IconMenuActive;
+        await ShowIconMenu.InvokeAsync(IconMenuActive);
+    }
+}

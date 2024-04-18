@@ -1,0 +1,51 @@
+﻿@using WholesalesRetailer.Shared.Models
+@page "/orders"
+@inject HttpClient Http
+@inject WholesalesRetailer.Client.Services.Interfaces.IOrderServiceFE  OrderServices
+
+<PageTitle>Orders</PageTitle>
+
+<h1>Orders Managment</h1>
+
+@if (place_Order == null)
+{
+     <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>OrderId</th>
+                <th>CustomerId</th>
+                <th>CustomerName</th>
+                <th>Status</th>
+                <th>OrderDate</th>
+                <th>OrderValue</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in place_Order)
+            {
+                <tr>
+                <td>@order.OrderId.</td>
+                <td>@order.CustomerId</td>
+                <td>@order.CustomerName</td>
+                <td>@order.OrderStatus</td>
+                <td>@order.OrderDate</td>
+                <td>@order.OrderValue RON</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<OrderFE?> place_Order;
+
+    protected override async Task OnInitializedAsync()
+    {
+        place_Order = await OrderServices.GetOrders();
+    }
+}

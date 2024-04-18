@@ -1,0 +1,86 @@
+﻿@using WholesalesRetailer.Shared.Models
+@page "/addCustomers"
+@inject HttpClient Http
+@inject WholesalesRetailer.Client.Services.Interfaces.ICustomerServiceFE CustomerServices
+
+<h3>Add Customer</h3>
+
+<EditForm Model="@new_customer" OnValidSubmit="CreateNewCustomer">
+    <DataAnnotationsValidator/>
+    <div class="form-group">
+        <label for="name">Name</label>
+        <InputText id="title" @bind-Value="new_customer.CustomerName" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label for="adress">Adress</label>
+        <InputText id="adress" @bind-Value="new_customer.Adress" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText id="title" @bind-Value="new_customer.Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="rebate_check">Has Rebate</label>
+        <InputCheckbox id="rebate_check" @bind-Value="rebate_check" class="form-check-input" />
+    </div>
+    <br/>
+    <br/>
+    <div>
+        <button class="btn btn-secondary" type="submit">Add Customer</button>
+    </div>
+    <ValidationSummary/>
+   
+</EditForm>
+
+
+@if(saved)
+{    
+    <p>Customer saved!</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <td>CustomerId</td>
+                <td>CustomerName</td>
+                <td>Email</td>
+                <td>Adress</td>
+            </tr>
+        </thead>
+        <tbody>
+               <tr>
+                    <td>@result.CustomerId</td>
+                    <td>@result.CustomerName</td>
+                    <td>@result.Adress</td>
+                    <td>@result.Email</td>
+                </tr>
+         </tbody>
+    </table>
+}
+
+@if(error)
+{
+    <p> Something went wrong.</p>
+}
+@code {
+    private CustomerFE new_customer = new();
+    private Customer result = new();
+    private bool rebate_check;
+    private bool saved = false;
+    private bool error = false;
+
+    async Task CreateNewCustomer()
+    {
+        saved = false;
+        error = false;
+        try
+        {
+            result = await CustomerServices.CreateCustomer(new_customer);
+            saved = result != null ? true : false;
+        }
+        catch(Exception ex)
+        {
+            error = true;
+            throw;
+        }
+        new_customer = new();
+    }
+}
