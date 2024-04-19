@@ -1,0 +1,14 @@
+﻿{
+  "id": 0,
+  "orderId": 0,
+  "customerId": 0,
+  "statusId": null,
+  "orderDate": null,
+  "orderValue": null,
+  "customerName": null,
+  "orderStatus": null,
+  "prodValue": null,
+  "procentRabate": null,
+  "cashBack": null,
+  "futureCashBack": null
+}
